@@ -36,3 +36,19 @@ Runs tests in console, in browser or with coverage.
 ### `lint`, `prettier`
 
 Runs linting and formatting for all files in `src` folder.
+
+### `deploy`
+
+Builds the project for production in `dist` folder and deploys project to S3 bucket with Cloudfront invalidation.
+
+### `destroy`
+
+Destroys S3 bucket with CloudFront
+
+## CloudFront URL
+
+https://d1fup1fohe6zoq.cloudfront.net
+
+## S3 bucket URL
+
+http://cdkstack-sitebucket397a1860-sxhvykgylfc4.s3-website-us-east-1.amazonaws.com
