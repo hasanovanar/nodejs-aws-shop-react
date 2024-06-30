@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
@@ -23,25 +24,48 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   };
 
   const uploadFile = async () => {
-    console.log("uploadFile to", url);
+    if (!file) return;
 
-    // Get the presigned URL
-    // const response = await axios({
-    //   method: "GET",
-    //   url,
-    //   params: {
-    //     name: encodeURIComponent(file.name),
-    //   },
-    // });
-    // console.log("File to upload: ", file.name);
-    // console.log("Uploading to: ", response.data);
-    // const result = await fetch(response.data, {
-    //   method: "PUT",
-    //   body: file,
-    // });
-    // console.log("Result: ", result);
-    // setFile("");
+    try {
+      console.log("Requesting presigned URL from", url);
+
+      // Get the presigned URL
+      const response = await axios(url, {
+        method: "GET",
+        params: {
+          name: encodeURIComponent(file.name),
+        },
+      });
+
+      const presignedUrl = response.data;
+
+      console.log("Presigned URL:", presignedUrl);
+
+      console.log("File to upload: ", file.name);
+
+      console.log("Uploading to: ", presignedUrl);
+
+      console.log("File details:", file);
+
+      // Upload the file to S3 using the presigned URL
+      const result = await fetch(presignedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": "text/csv",
+        },
+      });
+
+      console.log("File uploaded response:", result);
+      if (!result.ok) {
+        console.error("Failed to upload:", await result.text());
+      }
+      setFile(undefined); // Clear the file input after successful upload
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
+
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
