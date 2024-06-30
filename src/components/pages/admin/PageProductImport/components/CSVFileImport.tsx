@@ -37,7 +37,7 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
         },
       });
 
-      let presignedUrl = response.data.signedUrl;
+      const presignedUrl = response.data;
 
       console.log("Presigned URL:", presignedUrl);
 
