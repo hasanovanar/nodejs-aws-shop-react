@@ -8,6 +8,23 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
 
+import axios, { AxiosError } from "axios";
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response) {
+      const { status } = error.response;
+      if (status === 401) {
+        alert("Unauthorized access (401). Please use authorizer token.");
+      } else if (status === 403) {
+        alert("Forbidden access (403). Please use correct token.");
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
